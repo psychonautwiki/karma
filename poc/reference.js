@@ -196,16 +196,6 @@ const HMM = ((() => {
                 init[i] += del*rate;
             }
         }
-
-        static parse(str) {
-            const json = JSON.parse(str);
-            const hmm = new HMM(json[0], json[1]);
-            hmm.next_probs = ARR.call(null, json[2]);
-            hmm.out_probs = ARR.call(null, json[3]);
-            hmm.init_probs = ARR.call(null, json[4]);
-
-            return hmm;
-        }
     }
 
     HMM.prototype.init_probs = null;
@@ -219,4 +209,54 @@ const HMM = ((() => {
 
 if(typeof module !== 'undefined' && typeof require !== 'undefined'){
     module.exports = HMM;
+}
+
+const testPool = ["1,4-Butanediol","1P-ETH-LAD","1P-LSD","2-Aminoindane","2-FA","2-FMA","2-Fluorodeschloroketamine","2-Oxo-PCE","2-methyl-2-butanol","25B-NBOMe","25C-NBOMe","25I-NBOMe","25N-NBOMe","2C-B","2C-B-FLY","2C-C","2C-D","2C-E","2C-H","2C-I","2C-P","2C-T-2","2C-T-7","3-FA","3-FEA","3-FPM","3-MMC","3-MeO-PCE","3-MeO-PCMo","3-MeO-PCP","4-AcO-DET","4-AcO-DMT","4-AcO-DiPT","4-AcO-MET","4-AcO-MiPT","4-FA","4-FMA","4-HO-DET","4-HO-DPT","4-HO-DiPT","4-HO-EPT","4-HO-MET","4-HO-MPT","4-HO-MiPT","4-MeO-PCP","4F-EPH","5-APB","5-Hydroxytryptophan","5-MAPB","5-MeO-DALT","5-MeO-DMT","5-MeO-DiBF","5-MeO-DiPT","5-MeO-MiPT","5F-AKB48","5F-PB-22","6-APB","6-APDB","A-PHP","A-PVP","AB-FUBINACA","AL-LAD","ALD-52","Acetylfentanyl","Alcohol","Alpha-GPC","Alprazolam","Amphetamine","Armodafinil","Ayahuasca","Benzydamine","Bufotenin","Buprenorphine","Butylone","Caffeine","Cannabis","Carisoprodol","Choline bitartrate","Citicoline","Clonazepam","Clonazolam","Cocaine","Codeine","Coluracetam","Creatine","DET","DMT","DOB","DOC","DOI","DOM","DPT","DXM & DPH in combination","Dehydroxyfluorafinil","Deschloroetizolam","Deschloroketamine","Desoxypipradol","Dextromethorphan","Dextropropoxyphene","DiPT","Diazepam","Diclazepam","Dihydrocodeine","Diphenhydramine","Diphenidine","ETH-LAD","Efavirenz","Ephenidine","Escaline","Ethyl-Hexedrone","Ethylcathinone","Ethylone","Ethylphenidate","Etizolam","F-Phenibut","Fentanyl","Flubromazepam","Flubromazolam","GBL","GHB","Gabapentin","Haloperidol","Heroin","Hydrocodone","Hydromorphone","Ibogaine","Isopropylphenidate","JWH-073","Ketamine","Kratom","LSA","LSD","LSZ","Lisdexamfetamine","Lorazepam","MCPP","MDA","MDAI","MDEA","MDMA","MDPV","MET","MPT","Melatonin","Mephedrone","Methadone","Methallylescaline","Methamphetamine","Methaqualone","Methiopropamine","Methoxetamine","Methoxphenidine","Methylnaphthidate","Methylone","Methylphenidate","Metizolam","Mexedrone","MiPT","Mirtazapine","Modafinil","N-Acetylcysteine","NM-2-AI","Naloxone","Nicotine","Nifoxipam","Nitrous Oxide","Noopept","O-Desmethyltramadol","Oxiracetam","Oxycodone","Oxymorphone","PCP","PMMA","PRO-LAD","Pentobarbital","Pethidine","Phenibut","Phenobarbital","Piracetam","Pramiracetam","Pregabalin","Prolintane","Propylhexedrine","Proscaline","Psilocin","Pyrazolam","Quetiapine","RTI-111","Risperidone","STS-135","Salvinorin A","Secobarbital","Sufentanil","THJ-018","THJ-2201","TMA-2","TMA-6","Tapentadol","Temazepam","Theanine","Tianeptine","Tramadol","Tyrosine","U-47700","Zolpidem","Zopiclone"];
+
+const mapToTestPool = vec => vec.map(substance => testPool.indexOf(substance));
+
+{
+    // Create a HMM with 20 states and 10 characters.
+    var hmm = new HMM(testPool.length * 4, testPool.length);
+
+    // Randomize HMM (randomizing initial probabilities of each states)
+    //hmm.randomize();
+
+    const testVectors = [
+        // psychedelics
+
+        ["25C-NBOMe", "Bufotenin", "4-HO-DET", "4-HO-MPT", "DOC", "DOI", "TMA-2", "Efavirenz", "25C-NBOMe", "DiPT", "4-HO-MiPT"],
+        ["2C-C", "Bufotenin", "DOC", "4-HO-DiPT", "4-HO-EPT", "DET", "AL-LAD", "4-AcO-DiPT", "1P-ETH-LAD", "5-MeO-DMT", "4-AcO-DiPT"],
+        ["LSA", "ALD-52", "4-HO-DET", "5-MeO-DALT", "2C-D", "DPT", "Efavirenz", "2C-D", "AL-LAD", "2C-C", "Ayahuasca"],
+        ["Bufotenin", "TMA-6", "LSA", "5-MeO-DiBF", "TMA-2", "1P-LSD", "DPT", "2C-T-7", "AL-LAD", "2C-P", "5-MeO-DiBF"],
+        ["TMA-6", "Bufotenin", "2C-T-2", "Methallylescaline", "MiPT", "4-HO-DiPT", "Zolpidem", "DOC", "4-HO-DET", "4-HO-MiPT", "Ayahuasca"],
+        ["Ayahuasca", "TMA-6", "DPT", "MDA", "DPT", "25N-NBOMe", "TMA-2", "4-HO-MPT", "4-HO-DiPT", "4-AcO-DET", "5-MeO-DALT"],
+        ["Zolpidem", "Escaline", "5-MeO-DiBF", "2C-H", "Proscaline", "MET", "2C-D", "5-MeO-DiPT", "Psilocin", "Zolpidem", "2C-B-FLY"],
+
+        // stimulants
+
+        ["Ethylphenidate", "2-FA", "4-FA", "Desoxypipradol", "Methylnaphthidate", "Pramiracetam", "2-Aminoindane", "3-FA", "NM-2-AI", "Cocaine", "MDPV"],
+        ["Pramiracetam", "A-PVP", "A-PVP", "Caffeine", "Caffeine", "Ethyl-Hexedrone", "3-FA", "Lisdexamfetamine", "Desoxypipradol", "Methamphetamine", "3-FA"],
+        ["2-FMA", "4-FA", "Cocaine", "RTI-111", "MDPV", "Ethylphenidate", "Nicotine", "A-PVP", "Mexedrone", "4-FA", "A-PHP"],
+        ["Methylone", "Tyrosine", "Methamphetamine", "Ethyl-Hexedrone", "Ethylone", "Lisdexamfetamine", "Desoxypipradol", "3-FPM", "Desoxypipradol", "Mexedrone", "3-FA"],
+        ["NM-2-AI", "3-FA", "Methamphetamine", "Ethylone", "Methiopropamine", "Nicotine", "A-PVP", "4-FMA", "Butylone", "Methamphetamine", "Oxiracetam"],
+        ["Nicotine", "Mephedrone", "Prolintane", "Propylhexedrine", "Prolintane", "2-FA", "2-Aminoindane", "Tyrosine", "Cocaine", "Methylnaphthidate", "3-FA"],
+        ["Nicotine", "2-FA", "Isopropylphenidate", "A-PHP", "Mexedrone", "2-FA", "Methiopropamine", "Cocaine", "Methiopropamine", "Lisdexamfetamine", "Nicotine"],
+
+        // depressants
+
+        ["Secobarbital", "2-methyl-2-butanol", "Zopiclone", "Deschloroetizolam", "Etizolam", "Flubromazolam", "Carisoprodol", "Alcohol", "Deschloroetizolam", "GHB", "Carisoprodol"],
+        ["Nifoxipam", "1,4-Butanediol", "Flubromazepam", "GBL", "Lorazepam", "Pyrazolam", "Diclazepam", "Etizolam", "GBL", "Methaqualone", "Clonazolam"],
+        ["Deschloroetizolam", "Etizolam", "Nifoxipam", "Etizolam", "Alprazolam", "2-methyl-2-butanol", "Secobarbital", "Phenibut", "Nifoxipam", "Flubromazolam", "Alcohol"],
+        ["Diazepam", "Pyrazolam", "Alcohol", "Pentobarbital", "Diclazepam", "Diclazepam", "Lorazepam", "Temazepam", "Clonazepam", "Pyrazolam", "Etizolam"],
+        ["Alprazolam", "Zopiclone", "Temazepam", "Pentobarbital", "Deschloroetizolam", "GHB", "Carisoprodol", "Carisoprodol", "1,4-Butanediol", "Diclazepam", "Methaqualone"],
+        ["Clonazolam", "Diazepam", "Deschloroetizolam", "Deschloroetizolam", "F-Phenibut", "Phenobarbital", "Alcohol", "Lorazepam", "1,4-Butanediol", "Clonazepam", "Alcohol"],
+        ["Pentobarbital", "Nifoxipam", "Nifoxipam", "Flubromazepam", "F-Phenibut", "Zopiclone", "Methaqualone", "Alprazolam", "Clonazepam", "Flubromazolam", "Phenibut"]
+    ].map(vec => hmm.train(mapToTestPool(vec), 0.05))
+
+    console.log(
+        hmm.evaluate(mapToTestPool(["Carisoprodol", "1,4-Butanediol", "Diclazepam", "Methaqualone"])),
+        hmm.evaluate(mapToTestPool(["Ethylone", "Methiopropamine", "Nicotine", "A-PVP"])),
+        hmm.evaluate(mapToTestPool(["2C-D", "DPT", "Efavirenz", "2C-D"]))
+    );
 }
