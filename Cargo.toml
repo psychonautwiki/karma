@@ -1,6 +1,7 @@
 [package]
+authors = ["Kenan Sulayman <kenan@sly.mn>"]
 name = "karma"
 version = "0.1.0"
-authors = ["Kenan Sulayman <kenan@sly.mn>"]
 
 [dependencies]
+rand = "0.3.15"
