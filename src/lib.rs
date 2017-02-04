@@ -72,48 +72,6 @@ impl Karma {
         }
     }
 
-    /*
-    evaluate(outputs) {
-        if(outputs.length == 0) return 1;
-
-        const N = this.N;
-        const init_probs = this.init_probs;
-        const next_probs = this.next_probs;
-        const out_probs = this.out_probs;
-
-        const alphas = this._tmp;
-
-        let t;
-        let i;
-        let j;
-        let k;
-        let l;
-        let sum;
-        let output;
-
-        for(i=0,j=outputs[0]*N; i<N; i++,j++) alphas[i] = init_probs[i] * out_probs[j];
-
-        for(t=1; t<outputs.length; t++){
-            output = outputs[t];
-            for(j=0,k=output*N; j<N; j++,k++){
-                for(sum=i=0,l=j; i<N; i++, l+=N) sum += alphas[i] * next_probs[l];
-                alphas[N+j] = sum * out_probs[k];
-            }
-            if(++t >= outputs.length) break;
-
-            output = outputs[t];
-            for(j=0,k=output*N; j<N; j++,k++){
-                for(sum=i=0,l=j; i<N; i++, l+=N) sum += alphas[N+i] * next_probs[l];
-                alphas[j] = sum * out_probs[k];
-            }
-        }
-
-        if(t&1) for(sum=i=0; i<N; i++) sum += alphas[i];
-        else for(sum=i=0; i<N; i++) sum += alphas[N+i];
-        return sum;
-    }
-    */
-
     fn evaluate(&mut self, outputs: Vec<i64>) -> f64 {
         if outputs.len() == 0 {
             return 1.0f64;
@@ -129,42 +87,6 @@ impl Karma {
             j = j + 1;
         }
 
-        /*
-            for(t=1; t<outputs.length; t++){
-                output = outputs[t];
-
-                k=output*N;
-
-                for(j=0; j<N; j++){
-                    l=j;
-
-                    sum = 0;
-
-                    for(i=0; i<N; i++) {
-                        sum += alphas[i] * next_probs[l];
-
-                        l = l + N;
-                    }
-
-                    alphas[N+j] = sum * out_probs[k];
-
-                    k = k +1;
-                }
-
-                if(++t >= outputs.length) break;
-
-                output = outputs[t];
-
-                for(j=0,k=output*N; j<N; j++,k++){
-
-                    for(sum=i=0,l=j; i<N; i++, l+=N)
-                        sum += alphas[N+i] * next_probs[l];
-
-                    alphas[j] = sum * out_probs[k];
-                }
-            }
-        */
-
         let mut sum = 0f64;
 
         let mut t = 1;
@@ -176,6 +98,8 @@ impl Karma {
 
             for j in 0..states {
                 let mut l = j;
+
+                sum = 0f64;
 
                 for i in 0..states {
                     sum = sum + (self._tmp[i as usize] * self.next_probs[l as usize]);
@@ -201,6 +125,8 @@ impl Karma {
             for j in 0..states {
                 let mut l = j;
 
+                sum = 0;
+
                 for i in 0..states {
                     sum = sum + (self._tmp[(states + i) as usize] * self.next_probs[l as usize]);
 
@@ -212,18 +138,17 @@ impl Karma {
                 k = k +1;
             }
 
-            for i in 0..states {
-                let offset = match (t & 1) {
-                    1 => i,
-                    _ => (states + i)
-                };
-
-                sum = sum + (self._tmp[offset as usize]);
-            }
-
             t = t + 1;
         }
 
+        for i in 0..states {
+            let offset = match (t & 1) {
+                1 => i,
+                _ => (states + i)
+            };
+
+            sum = sum + (self._tmp[offset as usize]);
+        }
 
         sum
     }
