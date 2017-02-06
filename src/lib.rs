@@ -78,7 +78,7 @@ impl Karma {
     }
 
     #[inline(always)]
-    pub fn evaluate(&mut self, outputs: Vec<i64>) -> f64 {
+    pub fn evaluate(&mut self, outputs: &Vec<i64>) -> f64 {
         if outputs.len() == 0 {
             return 1.0f64;
         }
@@ -162,7 +162,7 @@ impl Karma {
     }
 
     #[inline(always)]
-    pub fn train(&mut self, outputs: Vec<i64>, rate: Option<f64>) {
+    pub fn train(&mut self, outputs: &Vec<i64>, rate: Option<f64>) {
         let rate = match rate {
             Some(rate) => rate,
             None => 0.05f64
@@ -362,10 +362,10 @@ mod tests {
 
         let mut hmm = Karma::new(20, 10);
 
-        hmm.train(vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9], None);
-        hmm.train(vec![0, 1, 4, 5, 7, 9, 0, 4, 7, 8, 2], Some(0.05));
+        hmm.train(&vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9], None);
+        hmm.train(&vec![0, 1, 4, 5, 7, 9, 0, 4, 7, 8, 2], Some(0.05));
 
-        let out = hmm.evaluate(vec![5, 6, 7, 8]);
+        let out = hmm.evaluate(&vec![5, 6, 7, 8]);
 
         assert!(out == 0.00010895785403664846f64);
     }

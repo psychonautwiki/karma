@@ -3,6 +3,11 @@ authors = ["Kenan Sulayman <kenan@sly.mn>"]
 name = "karma"
 version = "0.1.0"
 
+description = "An effective hidden markov model implementation using the Baum-Welch algorithm."
+license = "MIT"
+
+repository = "https://github.com/psychonautwiki/karma.git"
+
 [dependencies]
 rand = "0.3.15"
 
@@ -22,5 +27,5 @@ debug = false
 debug-assertions = false
 lto = true
 opt-level = 3
-panic = "abort"
+panic = "unwind"
 rpath = false
