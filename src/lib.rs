@@ -19,7 +19,7 @@ pub struct Karma {
 }
 
 impl Karma {
-    #[inline(always)]
+    #[inline(never)]
     pub fn new(states: i64, items: i64) -> Karma {
         let states_sq = states * states;
         let states_items = states * items;
@@ -48,7 +48,7 @@ impl Karma {
         karma
     }
 
-    #[inline(always)]
+    #[inline(never)]
     fn _resize_tmp(&mut self, new_size: i64) {
         if new_size <= self._max_size {
             return;
@@ -58,7 +58,7 @@ impl Karma {
         self._tmp = Box::new(vec!(0f64; (self.N * (3 * new_size + self.N)) as usize));
     }
 
-    #[inline(always)]
+    #[inline(never)]
     pub fn randomize(&mut self) {
         let states = self.N;
 
@@ -77,7 +77,7 @@ impl Karma {
         }
     }
 
-    #[inline(always)]
+    #[inline(never)]
     pub fn evaluate(&mut self, outputs: &Vec<i64>) -> f64 {
         if outputs.len() == 0 {
             return 1.0f64;
@@ -161,7 +161,7 @@ impl Karma {
         sum
     }
 
-    #[inline(always)]
+    #[inline(never)]
     pub fn train(&mut self, outputs: &Vec<i64>, rate: Option<f64>) {
         let rate = match rate {
             Some(rate) => rate,
